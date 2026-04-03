@@ -17,63 +17,65 @@ const BANDERITAS = [
   "#bb3100", "#ffc96f", "#865c00", "#ff7851",
 ];
 
-// Wavy banderitas rendered as SVG with catenary-style string
-// Wave y-position in pixels for t in [0, 1]
-// 3 full cosine-sag cycles — like a string tied at 4 points
-function banderitaY(t: number): number {
-  return 6 + 18 * (1 - Math.cos(t * Math.PI * 2 * 3)) / 2; // 6–24 px range
+// Wavy banderitas rendered entirely in SVG
+// String y-position in viewBox units for t in [0, 1]
+const VW = 1000; // viewBox width
+const VH = 72;   // viewBox height
+
+function stringY(t: number): number {
+  return 8 + 20 * (1 - Math.cos(t * Math.PI * 2 * 3)) / 2; // 8–28 range
+}
+
+// Tangent angle (degrees) of the string at position t
+function stringAngle(t: number): number {
+  const dy = 20 * Math.PI * 3 * Math.sin(t * Math.PI * 2 * 3); // dy/dt
+  const dx = VW; // dx/dt (x goes 0→VW as t goes 0→1)
+  return Math.atan2(dy, dx) * (180 / Math.PI);
 }
 
 function WavyBanderitas() {
-  const H = 70;          // container height px
-  const PW = 20;         // pennant width px (fixed)
-  const PH = 28;         // pennant height px (fixed)
+  const PW = 26; // pennant width in viewBox units
+  const PH = 36; // pennant height in viewBox units
   const count = BANDERITAS.length;
 
   return (
     <div
       className="absolute top-0 left-0 w-full"
-      style={{ height: H, pointerEvents: "none" }}
+      style={{ height: VH, pointerEvents: "none" }}
       aria-hidden
     >
-      {/* Pennants — fixed pixel triangles hanging straight down */}
-      {BANDERITAS.map((color, i) => {
-        const t = i / (count - 1);
-        const yPx = banderitaY(t);
-        return (
-          <div
-            key={i}
-            style={{
-              position: "absolute",
-              left: `${t * 100}%`,
-              top: yPx,
-              transform: "translateX(-50%)",
-              width: 0,
-              height: 0,
-              borderLeft: `${PW / 2}px solid transparent`,
-              borderRight: `${PW / 2}px solid transparent`,
-              borderTop: `${PH}px solid ${color}`,
-              opacity: 0.92,
-            }}
-          />
-        );
-      })}
-      {/* Wavy string drawn on top using SVG */}
       <svg
-        className="absolute inset-0 w-full"
-        style={{ height: H }}
-        viewBox={`0 0 100 ${H}`}
+        className="absolute inset-0 w-full h-full"
+        viewBox={`0 0 ${VW} ${VH}`}
         preserveAspectRatio="none"
         aria-hidden
       >
+        {/* Pennants — rotated to follow string tangent */}
+        {BANDERITAS.map((color, i) => {
+          const t = i / (count - 1);
+          const x = t * VW;
+          const y = stringY(t);
+          const angle = stringAngle(t);
+          return (
+            <g key={i} transform={`translate(${x},${y}) rotate(${angle})`}>
+              <polygon
+                points={`${-PW / 2},0 ${PW / 2},0 0,${PH}`}
+                fill={color}
+                opacity="0.92"
+              />
+            </g>
+          );
+        })}
+
+        {/* Wavy string */}
         <polyline
-          points={Array.from({ length: 101 }, (_, i) => {
-            const t = i / 100;
-            return `${t * 100},${banderitaY(t)}`;
+          points={Array.from({ length: 201 }, (_, i) => {
+            const t = i / 200;
+            return `${t * VW},${stringY(t)}`;
           }).join(" ")}
           fill="none"
-          stroke="rgba(56,57,42,0.30)"
-          strokeWidth="0.6"
+          stroke="rgba(56,57,42,0.32)"
+          strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
         />

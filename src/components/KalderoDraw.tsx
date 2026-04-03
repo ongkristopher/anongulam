@@ -8,12 +8,14 @@ type Phase = "idle" | "shuffling" | "shaking" | "opening" | "done";
 // Horizontal center (%) for each of the 3 slots: left / center / right
 const SLOT_X = ["16.5%", "50%", "83.5%"];
 
-// ── Single Kaldero ──────────────────────────────────────────────────────────
-function Kaldero({
+// ── Single Palayok ──────────────────────────────────────────────────────────
+function Palayok({
+  potId,
   shake,
   isCenter,
   openLid,
 }: {
+  potId: number;
   shake: boolean;
   isCenter: boolean;
   openLid: boolean;
@@ -23,10 +25,15 @@ function Kaldero({
     : {};
 
   const lidAnim: React.CSSProperties = openLid
-    ? { animation: "lid-open 0.75s cubic-bezier(0.34,1.56,0.64,1) forwards" }
+    ? {
+        animation: "lid-open 0.75s cubic-bezier(0.34,1.56,0.64,1) forwards",
+        transformBox: "fill-box" as React.CSSProperties["transformBox"],
+        transformOrigin: "center bottom",
+      }
     : {};
 
   const steamDelays = ["0s", "0.35s", "0.7s"];
+  const gid = `p${potId}`; // unique gradient prefix per pot instance
 
   return (
     <div
@@ -36,7 +43,7 @@ function Kaldero({
       style={potAnim}
     >
       {/* Steam puffs */}
-      <div className="relative flex justify-center mb-1 overflow-visible" style={{ height: 44 }}>
+      <div className="relative flex justify-center overflow-visible" style={{ height: 44 }}>
         {openLid &&
           steamDelays.map((delay, i) => (
             <span
@@ -53,22 +60,100 @@ function Kaldero({
           ))}
       </div>
 
-      {/* Lid */}
-      <div className="relative w-full flex justify-center" style={lidAnim}>
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-stone-300 border-2 border-stone-400 shadow-inner z-10" />
-        <div className="w-full h-9 bg-linear-to-b from-stone-300 to-stone-400 rounded-t-[3rem] rounded-b-lg shadow-md" />
-      </div>
+      {/* SVG palayok */}
+      <svg viewBox="0 0 160 165" width="160" height="165" overflow="visible">
+        <defs>
+          {/* Body gradient: warm terracotta with left highlight */}
+          <radialGradient id={`${gid}-body`} cx="30%" cy="32%" r="72%">
+            <stop offset="0%"   stopColor="#d46840" />
+            <stop offset="40%"  stopColor="#b84428" />
+            <stop offset="100%" stopColor="#782008" />
+          </radialGradient>
+          {/* Lid gradient */}
+          <radialGradient id={`${gid}-lid`} cx="34%" cy="28%" r="68%">
+            <stop offset="0%"   stopColor="#d46840" />
+            <stop offset="50%"  stopColor="#b84428" />
+            <stop offset="100%" stopColor="#782008" />
+          </radialGradient>
+          {/* Deep dark interior */}
+          <radialGradient id={`${gid}-inside`} cx="40%" cy="38%" r="62%">
+            <stop offset="0%"   stopColor="#180804" />
+            <stop offset="65%"  stopColor="#341008" />
+            <stop offset="100%" stopColor="#58200c" />
+          </radialGradient>
+          {/* Clip path for rattan mat weave lines */}
+          <clipPath id={`${gid}-mat-clip`}>
+            <ellipse cx="80" cy="152" rx="66" ry="13" />
+          </clipPath>
+        </defs>
 
-      {/* Pot body */}
-      <div className="relative w-full">
-        <div className="w-full h-5 bg-linear-to-b from-stone-400 to-stone-500 rounded-t-sm -mt-1 shadow" />
-        <div className="relative w-full h-28 bg-linear-to-b from-stone-500 to-stone-600 rounded-b-[2.5rem] shadow-xl overflow-hidden">
-          <div className="absolute top-2 left-4 w-6 h-16 bg-white/10 rounded-full rotate-12 blur-sm" />
-        </div>
-        <div className="absolute top-4 -left-3 w-4 h-8 bg-stone-400 rounded-full shadow" />
-        <div className="absolute top-4 -right-3 w-4 h-8 bg-stone-400 rounded-full shadow" />
-        <div className="mx-auto mt-1 w-4/5 h-3 bg-stone-700 rounded-b-full opacity-30 blur-sm" />
-      </div>
+        {/* Ground shadow */}
+        <ellipse cx="80" cy="161" rx="64" ry="5.5" fill="#200c02" opacity="0.22" />
+
+        {/* Rattan mat — prominent woven base */}
+        <ellipse cx="80" cy="152" rx="66" ry="13" fill="#c8a448" />
+        {/* Weave lines going one diagonal */}
+        <g clipPath={`url(#${gid}-mat-clip)`} stroke="#7a5e18" strokeWidth="4" strokeLinecap="round" opacity="0.45">
+          {Array.from({ length: 14 }, (_, i) => (
+            <line key={`wa${i}`} x1={14 + i * 11} y1="139" x2={14 + i * 11 + 14} y2="165" />
+          ))}
+        </g>
+        {/* Weave lines going the other diagonal */}
+        <g clipPath={`url(#${gid}-mat-clip)`} stroke="#e0c060" strokeWidth="3" strokeLinecap="round" opacity="0.35">
+          {Array.from({ length: 14 }, (_, i) => (
+            <line key={`wb${i}`} x1={146 - i * 11} y1="139" x2={146 - i * 11 - 14} y2="165" />
+          ))}
+        </g>
+        {/* Mat border rings */}
+        <ellipse cx="80" cy="152" rx="66" ry="13" fill="none" stroke="#7a5e18" strokeWidth="2"   opacity="0.60" />
+        <ellipse cx="80" cy="152" rx="52" ry="10" fill="none" stroke="#7a5e18" strokeWidth="1"   opacity="0.30" />
+        <ellipse cx="80" cy="152" rx="36" ry="6.5" fill="none" stroke="#7a5e18" strokeWidth="0.8" opacity="0.25" />
+
+        {/* Pot body — very wide squat belly */}
+        <path
+          d="M 28,66 C 4,70 2,143 80,146 C 158,143 156,70 132,66 Z"
+          fill={`url(#${gid}-body)`}
+        />
+
+        {/* Body left highlight sheen */}
+        <ellipse cx="50" cy="102" rx="11" ry="28" fill="white" opacity="0.07" transform="rotate(-10,50,102)" />
+
+        {/* Clay texture marks */}
+        <circle cx="34"  cy="108" r="2.2" fill="#5a1c06" opacity="0.30" />
+        <circle cx="50"  cy="132" r="1.6" fill="#5a1c06" opacity="0.24" />
+        <circle cx="118" cy="110" r="2"   fill="#5a1c06" opacity="0.26" />
+        <circle cx="100" cy="98"  r="1.5" fill="#5a1c06" opacity="0.20" />
+        <circle cx="42"  cy="124" r="1.4" fill="#5a1c06" opacity="0.18" />
+
+        {/* Base foot ring */}
+        <ellipse cx="80" cy="146" rx="44" ry="7" fill="#7a2a08" opacity="0.45" />
+
+        {/* Collar — neck transition from body top to rim underside */}
+        <path d="M 18,50 C 18,58 24,66 28,66 L 132,66 C 136,66 142,58 142,50 Z" fill="#ac3e18" />
+
+        {/* Rim top face — wide flat protruding lip */}
+        <ellipse cx="80" cy="50" rx="62" ry="15" fill="#c44e20" />
+        {/* Rim top highlight */}
+        <ellipse cx="62" cy="46" rx="24" ry="7" fill="white" opacity="0.11" />
+
+        {/* Dark interior — deep hollow bowl */}
+        <ellipse cx="80" cy="54" rx="54" ry="13" fill={`url(#${gid}-inside)`} />
+
+        {/* Lid group (animated) */}
+        <g style={lidAnim}>
+          {/* Lid flange — base aligned to rim (cy=50, rx matches rim rx=62) */}
+          <ellipse cx="80" cy="50" rx="65" ry="14" fill="#9c3810" />
+          {/* Lid dome — base closes along the top ellipse arc to match perspective */}
+          <path d="M 15,50 C 15,4 145,4 145,50 A 65,14 0 0 0 15,50 Z" fill={`url(#${gid}-lid)`} />
+          {/* Lid dome highlight */}
+          <ellipse cx="54" cy="28" rx="22" ry="14" fill="white" opacity="0.09" transform="rotate(-16,54,28)" />
+          {/* Cylindrical knob */}
+          <ellipse cx="80" cy="8"  rx="12" ry="5.5" fill="#c04820" />
+          <path   d="M 68,8 L 68,18 Q 80,22 92,18 L 92,8 Z" fill="#b03e18" />
+          <ellipse cx="80" cy="18" rx="12" ry="5"   fill="#8e3012" />
+          <ellipse cx="76" cy="6"  rx="6"  ry="3"   fill="white" opacity="0.18" />
+        </g>
+      </svg>
     </div>
   );
 }
@@ -154,7 +239,7 @@ export default function KalderoDraw({ viands, onResult }: KalderoDrawProps) {
     <section className="px-6 pb-16">
       <div className="max-w-4xl mx-auto">
 
-        {/* 3 Kalderos — absolutely positioned, slide between slots */}
+        {/* 3 Palayok — absolutely positioned, slide between slots */}
         <div className="relative max-w-2xl mx-auto mb-16" style={{ height: 280 }}>
           {[0, 1, 2].map((potIdx) => {
             const slot = slotOf[potIdx];
@@ -170,13 +255,14 @@ export default function KalderoDraw({ viands, onResult }: KalderoDrawProps) {
                   position: "absolute",
                   left: SLOT_X[slot],
                   bottom: 0,
-                  width: 140,
+                  width: 160,
                   transform: "translateX(-50%)",
                   transition: "left 0.38s cubic-bezier(0.65,0,0.35,1)",
                   zIndex: isCenter ? 10 : 1,
                 }}
               >
-                <Kaldero
+                <Palayok
+                  potId={potIdx}
                   shake={shake}
                   isCenter={isCenter}
                   openLid={openLid}
