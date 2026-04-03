@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Anong Ulam? 🍽️",
-  description: "I-draw ang iyong susunod na ulam mula sa mga masarap na Pilipinong pagkain!",
+  description:
+    "Nalilito ka ba kung ano ang next na ulam o kakainin mo? Check mo na dito!",
+  other: {
+    "google-adsense-account": process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || '',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const adsenseId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;
 
   return (
     <html lang="fil">
@@ -26,14 +28,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
           rel="stylesheet"
         />
-        {adsenseId && adsenseId !== "ca-pub-xxxxxxxxxxxxxxxx" && (
-          <Script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseId}`}
-            crossOrigin="anonymous"
-            strategy="afterInteractive"
-          />
-        )}
       </head>
       <body>{children}</body>
     </html>
