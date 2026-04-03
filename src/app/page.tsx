@@ -116,7 +116,9 @@ export default function Home() {
           className="flex items-center gap-2 font-headline font-black text-2xl"
           style={{ color: "#bb3100" }}
         >
-          <span className="material-symbols-filled" style={{ fontSize: 28 }}>restaurant_menu</span>
+          <span className="material-symbols-filled" style={{ fontSize: 28 }}>
+            restaurant_menu
+          </span>
           Anong Ulam?
         </div>
       </header>
@@ -125,7 +127,10 @@ export default function Home() {
         {/* ── Hero ── */}
         <section className="relative px-6 pt-8 pb-16 overflow-hidden text-center">
           {/* Banderitas — wavy hanging string + triangle pennants */}
-          <div className="absolute top-0 left-0 w-full pointer-events-none" style={{ height: 72 }}>
+          <div
+            className="absolute top-0 left-0 w-full pointer-events-none"
+            style={{ height: 72 }}
+          >
             <WavyBanderitas />
           </div>
 
@@ -136,15 +141,19 @@ export default function Home() {
             >
               Kainan Na!
             </h1>
-            <p className="text-lg md:text-xl" style={{ color: "#38392a", opacity: 0.75 }}>
-              Feeling undecided? Let the festive spirits choose your next delicious Filipino feast.
+            <p
+              className="text-lg md:text-xl"
+              style={{ color: "#38392a", opacity: 0.75 }}
+            >
+              Feeling undecided? Let the festive spirits choose your next
+              delicious Filipino feast.
             </p>
           </div>
         </section>
 
         {/* ── Top Ad ── */}
         <div className="max-w-3xl mx-auto px-6 mb-8">
-          <AdBanner adSlot="YOUR_TOP_AD_SLOT_ID" />
+          <AdBanner adSlot="3237453338" />
         </div>
 
         {/* ── Kaldero Draw ── */}
@@ -155,17 +164,17 @@ export default function Home() {
           >
             <span
               className="material-symbols-outlined mr-3"
-              style={{ animation: "spin 1s linear infinite", display: "inline-block" }}
+              style={{
+                animation: "spin 1s linear infinite",
+                display: "inline-block",
+              }}
             >
               autorenew
             </span>
             Nag-lo-load ng mga ulam…
           </div>
         ) : (
-          <KalderoDraw
-            viands={viands}
-            onResult={(v) => setWinner(v)}
-          />
+          <KalderoDraw viands={viands} onResult={(v) => setWinner(v)} />
         )}
 
         {/* ── Recipe Result (appears after draw) ── */}
@@ -173,10 +182,9 @@ export default function Home() {
 
         {/* ── Bottom Ad ── */}
         <div className="max-w-3xl mx-auto px-6 mt-16">
-          <AdBanner adSlot="YOUR_BOTTOM_AD_SLOT_ID" />
+          <AdBanner adSlot="4734367837" />
         </div>
       </main>
-
     </>
   );
 }
