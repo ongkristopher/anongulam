@@ -238,15 +238,18 @@ export default function KalderoDraw({ viands, onResult }: KalderoDrawProps) {
   return (
     <section className="px-6 pb-16">
       <div className="max-w-4xl mx-auto">
-
         {/* 3 Palayok — absolutely positioned, slide between slots */}
-        <div className="relative max-w-2xl mx-auto mb-16" style={{ height: 280 }}>
+        <div
+          className="relative max-w-2xl mx-auto mb-16"
+          style={{ height: 280 }}
+        >
           {[0, 1, 2].map((potIdx) => {
             const slot = slotOf[potIdx];
             const isCenter = slot === 1;
             const isChosen = chosenPot === potIdx;
             const shake = isChosen && phase === "shaking";
-            const openLid = isChosen && (phase === "opening" || phase === "done");
+            const openLid =
+              isChosen && (phase === "opening" || phase === "done");
 
             return (
               <div
@@ -273,27 +276,36 @@ export default function KalderoDraw({ viands, onResult }: KalderoDrawProps) {
         </div>
 
         {/* CTA */}
-        <div className="text-center">
+        <div className="text-center font-bbt">
           {phase === "idle" && (
             <button
               onClick={handleDraw}
               disabled={viands.length === 0}
               className="inline-flex items-center gap-3 px-12 py-5 rounded-full text-white font-headline font-black text-2xl shadow-[0px_20px_40px_rgba(187,49,0,0.25)] hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
-              style={{ background: "linear-gradient(135deg, #bb3100, #ff7851)" }}
+              style={{
+                background: "linear-gradient(135deg, #bb3100, #ff7851)",
+              }}
             >
               <span className="material-symbols-filled">celebration</span>
               MAGDRAW NA!
             </button>
           )}
 
-          {(phase === "shuffling" || phase === "shaking" || phase === "opening") && (
+          {(phase === "shuffling" ||
+            phase === "shaking" ||
+            phase === "opening") && (
             <div
               className="inline-flex items-center gap-3 px-12 py-5 rounded-full text-white font-headline font-black text-2xl opacity-75 cursor-not-allowed"
-              style={{ background: "linear-gradient(135deg, #bb3100, #ff7851)" }}
+              style={{
+                background: "linear-gradient(135deg, #bb3100, #ff7851)",
+              }}
             >
               <span
                 className="material-symbols-outlined"
-                style={{ animation: "pot-spin 1s linear infinite", display: "inline-block" }}
+                style={{
+                  animation: "pot-spin 1s linear infinite",
+                  display: "inline-block",
+                }}
               >
                 autorenew
               </span>

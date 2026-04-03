@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+/* ── Local Fonts ── */
+@font-face {
+  font-family: "BBTMartiresFree";
+  src: url("/fonts/BBTMartiresFree-ExtraBold.otf") format("opentype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ── Design System Tokens (The Modern Fiesta) ── */
 @theme {
   /* Colors */
@@ -24,8 +33,7 @@
   --color-outline-variant:          #bbbaa6;
 
   /* Typography */
-  --font-headline: "Epilogue", sans-serif;
-  --font-body:     "Plus Jakarta Sans", sans-serif;
+  --font-bbt:      "BBTMartiresFree", sans-serif;
 
   /* Animations */
   --animate-wobble:    wobble 0.45s ease-in-out infinite;
@@ -82,8 +90,7 @@ body {
   overflow-x: hidden;
 }
 
-.font-headline { font-family: var(--font-headline); }
-.font-body     { font-family: var(--font-body); }
+.font-bbt      { font-family: var(--font-bbt); letter-spacing: 2px; }
 
 /* ── Banig woven pattern ── */
 .banig-pattern {

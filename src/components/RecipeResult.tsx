@@ -42,7 +42,7 @@ export default function RecipeResult({ viand }: RecipeResultProps) {
           </span>
 
           <h2
-            className="font-headline text-5xl md:text-6xl font-black mb-2 leading-tight"
+            className="font-bbt text-5xl md:text-6xl font-black mb-2 leading-tight"
             style={{ color: "#bb3100" }}
           >
             {viand.name}

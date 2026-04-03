@@ -113,13 +113,13 @@ export default function Home() {
         }}
       >
         <div
-          className="flex items-center gap-2 font-headline font-black text-2xl"
+          className="flex items-center gap-2 font-bbt text-2xl"
           style={{ color: "#bb3100" }}
         >
           <span className="material-symbols-filled" style={{ fontSize: 28 }}>
             restaurant_menu
           </span>
-          Anong Ulam?
+          Anong Ulam
         </div>
       </header>
 
@@ -136,7 +136,7 @@ export default function Home() {
 
           <div className="relative z-10 max-w-2xl mx-auto pt-6">
             <h1
-              className="font-headline font-black leading-tight mb-4"
+              className="font-headline font-bbt leading-tight mb-4"
               style={{ fontSize: "clamp(3rem, 8vw, 5rem)", color: "#bb3100" }}
             >
               Kainan Na!
