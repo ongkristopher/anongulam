@@ -1,9 +1,6 @@
 "use client";
 
-export const dynamic = "force-dynamic";
-
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { useState } from "react";
 import type { Viand } from "@/types/viand";
 import KalderoDraw from "@/components/KalderoDraw";
 import RecipeResult from "@/components/RecipeResult";
@@ -85,21 +82,7 @@ function WavyBanderitas() {
 }
 
 export default function Home() {
-  const [viands, setViands] = useState<Viand[]>([]);
-  const [loading, setLoading] = useState(true);
   const [winner, setWinner] = useState<Viand | null>(null);
-
-  useEffect(() => {
-    supabase
-      .from("viands")
-      .select("*")
-      .order("name")
-      .then(({ data, error }) => {
-        if (error) console.error("Supabase error:", error.message);
-        else setViands(data ?? []);
-        setLoading(false);
-      });
-  }, []);
 
   return (
     <>
@@ -157,25 +140,7 @@ export default function Home() {
         </div>
 
         {/* ── Kaldero Draw ── */}
-        {loading ? (
-          <div
-            className="flex items-center justify-center py-32 font-body text-lg"
-            style={{ color: "#82816f" }}
-          >
-            <span
-              className="material-symbols-outlined mr-3"
-              style={{
-                animation: "spin 1s linear infinite",
-                display: "inline-block",
-              }}
-            >
-              autorenew
-            </span>
-            Nag-lo-load ng mga ulam…
-          </div>
-        ) : (
-          <KalderoDraw viands={viands} onResult={(v) => setWinner(v)} />
-        )}
+        <KalderoDraw onResult={(v) => setWinner(v)} />
 
         {/* ── Recipe Result (appears after draw) ── */}
         {winner && <RecipeResult key={winner.id} viand={winner} />}

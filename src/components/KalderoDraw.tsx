@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import type { Viand } from "@/types/viand";
 
-type Phase = "idle" | "shuffling" | "shaking" | "opening" | "done";
+type Phase = "idle" | "shuffling" | "shaking" | "opening" | "done" | "error";
 
 // Horizontal center (%) for each of the 3 slots: left / center / right
 const SLOT_X = ["16.5%", "50%", "83.5%"];
@@ -160,23 +160,29 @@ function Palayok({
 
 // ── Main Component ──────────────────────────────────────────────────────────
 interface KalderoDrawProps {
-  viands: Viand[];
   onResult: (viand: Viand) => void;
 }
 
-export default function KalderoDraw({ viands, onResult }: KalderoDrawProps) {
+export default function KalderoDraw({ onResult }: KalderoDrawProps) {
   const [phase, setPhase] = useState<Phase>("idle");
   // slotOf[potIndex] = slot index (0=left, 1=center, 2=right)
   const [slotOf, setSlotOf] = useState([0, 1, 2]);
   const [chosenPot, setChosenPot] = useState<number | null>(null);
 
-  const winnerRef = useRef<Viand | null>(null);
+  // Holds the in-flight fetch promise so the animation and fetch run in parallel
+  const fetchRef = useRef<Promise<Viand | null>>(Promise.resolve(null));
   const onResultRef = useRef(onResult);
   useEffect(() => { onResultRef.current = onResult; }, [onResult]);
 
   const handleDraw = () => {
-    if (phase !== "idle" || viands.length === 0) return;
-    winnerRef.current = viands[Math.floor(Math.random() * viands.length)];
+    if (phase !== "idle" && phase !== "error") return;
+
+    // Kick off the fetch immediately — runs in parallel with the animation
+    fetchRef.current = fetch("/api/random-viand")
+      .then((r) => r.json())
+      .then(({ viand }) => viand ?? null)
+      .catch(() => null);
+
     setSlotOf([0, 1, 2]);
     setChosenPot(null);
     setPhase("shuffling");
@@ -188,7 +194,7 @@ export default function KalderoDraw({ viands, onResult }: KalderoDrawProps) {
     setChosenPot(null);
   };
 
-  // Shell-game shuffle: swap random pairs every 250ms, 16 times (~4s total)
+  // Shell-game shuffle: swap random pairs every 450ms, 12 times (~5.4s total)
   useEffect(() => {
     if (phase !== "shuffling") return;
 
@@ -211,16 +217,23 @@ export default function KalderoDraw({ viands, onResult }: KalderoDrawProps) {
         setChosenPot(chosen);
         setPhase("shaking");
 
-        // shake → open → done
+        // shake → open → reveal
         setTimeout(() => setPhase("opening"), 1200);
         setTimeout(() => {
-          setPhase("done");
-          if (winnerRef.current) onResultRef.current(winnerRef.current);
-          setTimeout(() => {
-            document
-              .getElementById("recipe-section")
-              ?.scrollIntoView({ behavior: "smooth", block: "start" });
-          }, 150);
+          // By now (5.4s + 2.3s = 7.7s elapsed) the fetch is certainly done
+          fetchRef.current.then((viand) => {
+            if (viand) {
+              setPhase("done");
+              onResultRef.current(viand);
+              setTimeout(() => {
+                document
+                  .getElementById("recipe-section")
+                  ?.scrollIntoView({ behavior: "smooth", block: "start" });
+              }, 150);
+            } else {
+              setPhase("error");
+            }
+          });
         }, 2300);
       }
     }, 450);
@@ -277,18 +290,24 @@ export default function KalderoDraw({ viands, onResult }: KalderoDrawProps) {
 
         {/* CTA */}
         <div className="text-center font-bbt">
-          {phase === "idle" && (
-            <button
-              onClick={handleDraw}
-              disabled={viands.length === 0}
-              className="inline-flex items-center gap-3 px-12 py-5 rounded-full text-white font-headline font-black text-2xl shadow-[0px_20px_40px_rgba(187,49,0,0.25)] hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
-              style={{
-                background: "linear-gradient(135deg, #bb3100, #ff7851)",
-              }}
-            >
-              <span className="material-symbols-filled">celebration</span>
-              MAGDRAW NA!
-            </button>
+          {(phase === "idle" || phase === "error") && (
+            <>
+              {phase === "error" && (
+                <p className="text-sm mb-4" style={{ color: "var(--color-tertiary)" }}>
+                  May problema sa pagkuha ng ulam. Subukan muli.
+                </p>
+              )}
+              <button
+                onClick={handleDraw}
+                className="inline-flex items-center gap-3 px-12 py-5 rounded-full text-white font-headline font-black text-2xl shadow-[0px_20px_40px_rgba(187,49,0,0.25)] hover:scale-105 active:scale-95 transition-all duration-200"
+                style={{
+                  background: "linear-gradient(135deg, #bb3100, #ff7851)",
+                }}
+              >
+                <span className="material-symbols-filled">celebration</span>
+                MAGDRAW NA!
+              </button>
+            </>
           )}
 
           {(phase === "shuffling" ||

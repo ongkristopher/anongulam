@@ -59,15 +59,26 @@ export default function RecipeResult({ viand }: RecipeResultProps) {
               </span>
             )}
             {viand.cook_time && (
-              <span className="flex items-center gap-1 text-sm" style={{ color: "#656554" }}>
-                <span className="material-symbols-outlined" style={{ fontSize: 16 }}>timer</span>
+              <span
+                className="flex items-center gap-1 text-sm"
+                style={{ color: "#656554" }}
+              >
+                <span
+                  className="material-symbols-outlined"
+                  style={{ fontSize: 16 }}
+                >
+                  timer
+                </span>
                 {viand.cook_time}
               </span>
             )}
           </div>
 
           {viand.description && (
-            <p className="text-lg leading-relaxed mb-8" style={{ color: "#38392a" }}>
+            <p
+              className="text-lg leading-relaxed mb-8"
+              style={{ color: "#38392a" }}
+            >
               {viand.description}
             </p>
           )}
@@ -75,17 +86,29 @@ export default function RecipeResult({ viand }: RecipeResultProps) {
           {/* Ingredients + Quick Recipe */}
           <div className="grid grid-cols-2 gap-4 mb-8">
             {viand.ingredients.length > 0 && (
-              <div className="p-5 rounded-2xl" style={{ background: "#ffffd3" }}>
+              <div
+                className="p-5 rounded-2xl"
+                style={{ background: "#ffffd3" }}
+              >
                 <h4
                   className="font-bold mb-3 flex items-center gap-2 text-sm uppercase tracking-wide"
                   style={{ color: "#865c00" }}
                 >
-                  <span className="material-symbols-outlined" style={{ fontSize: 16 }}>inventory_2</span>
+                  <span
+                    className="material-symbols-outlined"
+                    style={{ fontSize: 16 }}
+                  >
+                    inventory_2
+                  </span>
                   Ingredients
                 </h4>
                 <ul className="space-y-1">
                   {viand.ingredients.map((ing, i) => (
-                    <li key={i} className="text-sm" style={{ color: "#38392a" }}>
+                    <li
+                      key={i}
+                      className="text-sm"
+                      style={{ color: "#38392a" }}
+                    >
                       • {ing}
                     </li>
                   ))}
@@ -94,18 +117,75 @@ export default function RecipeResult({ viand }: RecipeResultProps) {
             )}
 
             {viand.quick_recipe && (
-              <div className="p-5 rounded-2xl" style={{ background: "#ffffd3" }}>
+              <div
+                className="p-5 rounded-2xl"
+                style={{ background: "#ffffd3" }}
+              >
                 <h4
                   className="font-bold mb-3 flex items-center gap-2 text-sm uppercase tracking-wide"
                   style={{ color: "#865c00" }}
                 >
-                  <span className="material-symbols-outlined" style={{ fontSize: 16 }}>menu_book</span>
+                  <span
+                    className="material-symbols-outlined"
+                    style={{ fontSize: 16 }}
+                  >
+                    menu_book
+                  </span>
                   Quick Recipe
                 </h4>
-                <p className="text-sm leading-relaxed" style={{ color: "#38392a", opacity: 0.85 }}>
-                  {viand.quick_recipe}
-                </p>
+                <ol className="space-y-2">
+                  {viand.quick_recipe
+                    .split(/\r?\n/)
+                    .filter((s) => s.trim())
+                    .map((step, i) => (
+                      <li
+                        key={i}
+                        className="text-sm flex gap-2 leading-relaxed"
+                        style={{ color: "#38392a" }}
+                      >
+                        <span
+                          className="font-bold shrink-0"
+                          style={{ color: "#bb3100" }}
+                        >
+                          {i + 1}.
+                        </span>
+                        <span style={{ opacity: 0.85 }}>{step.trim()}</span>
+                      </li>
+                    ))}
+                </ol>
               </div>
+            )}
+          </div>
+
+          {/* Disclaimer + Source */}
+          <div className="mt-4 flex flex-wrap items-start gap-2">
+            <p className="text-xs leading-relaxed" style={{ color: "#656554" }}>
+              <span
+                className="material-symbols-outlined align-middle"
+                style={{ fontSize: 13 }}
+              >
+                info
+              </span>{" "}
+              Ang recipe na ito ay maaaring nanggaling sa iba&apos;t ibang
+              pinagkukunan tulad ng Facebook, Google, o iba pang website. Hindi
+              ito eksklusibong gawa ng &apos;<span className="font-bbt">Anong Ulam</span>&apos;
+            </p>
+            {viand.source_url && (
+              <a
+                href={viand.source_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-xs font-semibold px-3 py-1 rounded-full shrink-0 transition-opacity hover:opacity-70"
+                style={{ background: "#ffc96f", color: "#614100" }}
+              >
+                <span
+                  className="material-symbols-outlined"
+                  style={{ fontSize: 12 }}
+                >
+                  open_in_new
+                </span>
+                Tingnan ang Pinagkunan
+              </a>
             )}
           </div>
         </div>
@@ -137,7 +217,9 @@ export default function RecipeResult({ viand }: RecipeResultProps) {
             style={{ background: "linear-gradient(135deg, #bb3100, #ff7851)" }}
           >
             <span className="text-white font-headline font-bold text-center leading-tight text-sm">
-              YUMMY!<br />CHOICE
+              YUMMY!
+              <br />
+              CHOICE
             </span>
           </div>
         </div>
