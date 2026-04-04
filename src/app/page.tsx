@@ -19,15 +19,17 @@ const BANDERITAS = [
 const VW = 1000; // viewBox width
 const VH = 72;   // viewBox height
 
+const R2 = (n: number) => Math.round(n * 100) / 100;
+
 function stringY(t: number): number {
-  return 8 + 20 * (1 - Math.cos(t * Math.PI * 2 * 3)) / 2; // 8–28 range
+  return R2(8 + 20 * (1 - Math.cos(t * Math.PI * 2 * 3)) / 2); // 8–28 range
 }
 
 // Tangent angle (degrees) of the string at position t
 function stringAngle(t: number): number {
   const dy = 20 * Math.PI * 3 * Math.sin(t * Math.PI * 2 * 3); // dy/dt
   const dx = VW; // dx/dt (x goes 0→VW as t goes 0→1)
-  return Math.atan2(dy, dx) * (180 / Math.PI);
+  return R2(Math.atan2(dy, dx) * (180 / Math.PI));
 }
 
 function WavyBanderitas() {
@@ -83,12 +85,19 @@ function WavyBanderitas() {
 
 export default function Home() {
   const [winner, setWinner] = useState<Viand | null>(null);
+  const [drawKey, setDrawKey] = useState(0);
+
+  function handlePickNew() {
+    setWinner(null);
+    setDrawKey((k) => k + 1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
   return (
-    <>
+    <div className="flex flex-col h-full">
       {/* ── Sticky Nav ── */}
       <header
-        className="fixed top-0 left-0 right-0 z-50 flex items-center px-6 py-4"
+        className="shrink-0 z-50 flex items-center px-6 py-4"
         style={{
           background: "rgba(255,255,211,0.85)",
           backdropFilter: "blur(12px)",
@@ -99,16 +108,15 @@ export default function Home() {
           className="flex items-center gap-2 font-bbt text-2xl"
           style={{ color: "#bb3100" }}
         >
-          <span className="material-symbols-filled" style={{ fontSize: 28 }}>
-            restaurant_menu
-          </span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/icon.webp" alt="Anong Ulam icon" width={48} height={48} style={{ borderRadius: 10, objectFit: "cover" }} />
           Anong Ulam
         </div>
       </header>
 
-      <main className="pt-24 pb-16">
+      <main className="flex-1 overflow-y-auto flex flex-col">
         {/* ── Hero ── */}
-        <section className="relative px-6 pt-8 pb-16 overflow-hidden text-center">
+        <section className="relative px-6 pt-8 pb-6 overflow-hidden text-center shrink-0">
           {/* Banderitas — wavy hanging string + triangle pennants */}
           <div
             className="absolute top-0 left-0 w-full pointer-events-none"
@@ -119,13 +127,13 @@ export default function Home() {
 
           <div className="relative z-10 max-w-2xl mx-auto pt-6">
             <h1
-              className="font-headline font-bbt leading-tight mb-4"
-              style={{ fontSize: "clamp(3rem, 8vw, 5rem)", color: "#bb3100" }}
+              className="font-headline font-bbt leading-tight mb-3"
+              style={{ fontSize: "clamp(2.5rem, 7vw, 4.5rem)", color: "#bb3100" }}
             >
               Kainan Na!
             </h1>
             <p
-              className="text-lg md:text-xl"
+              className="text-base md:text-lg"
               style={{ color: "#38392a", opacity: 0.75 }}
             >
               Feeling undecided? Let the festive spirits choose your next
@@ -135,21 +143,25 @@ export default function Home() {
         </section>
 
         {/* ── Top Ad ── */}
-        <div className="max-w-3xl mx-auto px-6 mb-8">
+        <div className="max-w-3xl mx-auto px-6 mb-4 shrink-0">
           <AdBanner adSlot="3237453338" />
         </div>
 
-        {/* ── Kaldero Draw ── */}
-        <KalderoDraw onResult={(v) => setWinner(v)} />
+        {/* ── Kaldero Draw — flex-1 so it fills remaining space on initial view ── */}
+        <div className="flex-1 flex flex-col justify-center">
+          <KalderoDraw key={drawKey} onResult={(v) => setWinner(v)} />
+        </div>
 
         {/* ── Recipe Result (appears after draw) ── */}
-        {winner && <RecipeResult key={winner.id} viand={winner} />}
+        {winner && <RecipeResult key={winner.id} viand={winner} onPickNew={handlePickNew} />}
 
         {/* ── Bottom Ad ── */}
-        <div className="max-w-3xl mx-auto px-6 mt-16">
-          <AdBanner adSlot="4734367837" />
-        </div>
+        {winner && (
+          <div className="max-w-3xl mx-auto px-6 mt-16 mb-16 shrink-0">
+            <AdBanner adSlot="4734367837" />
+          </div>
+        )}
       </main>
-    </>
+    </div>
   );
 }

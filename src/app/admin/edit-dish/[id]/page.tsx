@@ -16,7 +16,7 @@ export default function EditDishPage() {
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [ingredients, setIngredients] = useState<string[]>([""]);
+  const [ingredientsText, setIngredientsText] = useState("");
   const [quickRecipe, setQuickRecipe] = useState("");
   const [cookTime, setCookTime] = useState("");
   const [category, setCategory] = useState("");
@@ -37,7 +37,7 @@ export default function EditDishPage() {
         if (err || !dish) { setNotFound(true); return; }
         setName(dish.name ?? "");
         setDescription(dish.description ?? "");
-        setIngredients(dish.ingredients?.length ? dish.ingredients : [""]);
+        setIngredientsText(dish.ingredients?.length ? dish.ingredients.join("\n") : "");
         setQuickRecipe(dish.quick_recipe ?? "");
         setCookTime(dish.cook_time ?? "");
         setCategory(dish.category ?? "");
@@ -54,14 +54,6 @@ export default function EditDishPage() {
     if (!file) return;
     setImageFile(file);
     setImagePreview(URL.createObjectURL(file));
-  }
-
-  function addIngredient() { setIngredients([...ingredients, ""]); }
-  function removeIngredient(idx: number) { setIngredients(ingredients.filter((_, i) => i !== idx)); }
-  function updateIngredient(idx: number, value: string) {
-    const updated = [...ingredients];
-    updated[idx] = value;
-    setIngredients(updated);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -93,7 +85,7 @@ export default function EditDishPage() {
           name,
           description,
           image_url,
-          ingredients: ingredients.filter((i) => i.trim()),
+          ingredients: ingredientsText.split("\n").map((s) => s.trim()).filter(Boolean),
           quick_recipe: quickRecipe,
           cook_time: cookTime,
           category,
@@ -249,39 +241,17 @@ export default function EditDishPage() {
         {/* Ingredients */}
         <div>
           <label className={labelClass} style={labelStyle}>Mga Sangkap</label>
-          <div className="flex flex-col gap-2">
-            {ingredients.map((ing, idx) => (
-              <div key={idx} className="flex items-center gap-2">
-                <input
-                  type="text"
-                  placeholder={`Sangkap ${idx + 1}`}
-                  value={ing}
-                  onChange={(e) => updateIngredient(idx, e.target.value)}
-                  className={inputClass}
-                  style={inputStyle}
-                />
-                {ingredients.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeIngredient(idx)}
-                    className="shrink-0 w-9 h-9 rounded-lg flex items-center justify-center transition-opacity hover:opacity-70"
-                    style={{ background: "var(--color-surface-container-high)", color: "var(--color-on-surface-variant)" }}
-                  >
-                    <span className="material-symbols-outlined" style={{ fontSize: 18 }}>remove</span>
-                  </button>
-                )}
-              </div>
-            ))}
-            <button
-              type="button"
-              onClick={addIngredient}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold self-start transition-opacity hover:opacity-80"
-              style={{ background: "var(--color-secondary-container)", color: "var(--color-on-secondary-container)" }}
-            >
-              <span className="material-symbols-outlined" style={{ fontSize: 16 }}>add</span>
-              Magdagdag ng Sangkap
-            </button>
-          </div>
+          <p className="text-xs mb-2" style={{ color: "var(--color-on-surface-variant)" }}>
+            Bawat linya = isang sangkap. hal. &quot;1kg Pork Belly&quot;
+          </p>
+          <textarea
+            placeholder={"1kg Pork Belly\n1/2 cup Soy Sauce\n1/4 cup Vinegar\n1 head Garlic"}
+            value={ingredientsText}
+            onChange={(e) => setIngredientsText(e.target.value)}
+            rows={6}
+            className={inputClass}
+            style={{ ...inputStyle, resize: "vertical", fontFamily: "monospace", lineHeight: 1.6 }}
+          />
         </div>
 
         {/* Quick Recipe */}

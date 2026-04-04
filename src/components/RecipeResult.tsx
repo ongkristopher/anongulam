@@ -6,9 +6,10 @@ import type { Viand } from "@/types/viand";
 
 interface RecipeResultProps {
   viand: Viand;
+  onPickNew?: () => void;
 }
 
-export default function RecipeResult({ viand }: RecipeResultProps) {
+export default function RecipeResult({ viand, onPickNew }: RecipeResultProps) {
   const sectionRef = useRef<HTMLElement>(null);
 
   // Trigger confetti on reveal
@@ -84,7 +85,7 @@ export default function RecipeResult({ viand }: RecipeResultProps) {
           )}
 
           {/* Ingredients + Quick Recipe */}
-          <div className="grid grid-cols-2 gap-4 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
             {viand.ingredients.length > 0 && (
               <div
                 className="p-5 rounded-2xl"
@@ -156,6 +157,20 @@ export default function RecipeResult({ viand }: RecipeResultProps) {
               </div>
             )}
           </div>
+
+          {/* Pick New Dish */}
+          {onPickNew && (
+            <div className="mb-6">
+              <button
+                onClick={onPickNew}
+                className="inline-flex items-center gap-3 px-10 py-4 rounded-full font-headline font-bold text-xl transition-all hover:scale-105 active:scale-95 text-white shadow-[0px_12px_32px_rgba(187,49,0,0.3)]"
+                style={{ background: "linear-gradient(135deg, #bb3100, #ff7851)" }}
+              >
+                <span className="material-symbols-filled">celebration</span>
+                Pumili ng Bagong Ulam
+              </button>
+            </div>
+          )}
 
           {/* Disclaimer + Source */}
           <div className="mt-4 flex flex-wrap items-start gap-2">

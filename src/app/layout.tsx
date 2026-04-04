@@ -5,6 +5,10 @@ export const metadata: Metadata = {
   title: "Anong Ulam? 🍽️",
   description:
     "Nalilito ka ba kung ano ang next na ulam o kakainin mo? Check mo na dito!",
+  icons: {
+    icon: "/icons/favicon.ico",
+    apple: "/icons/apple-touch-icon.png",
+  },
   other: {
     "google-adsense-account": process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || '',
   },
@@ -12,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fil">
+    <html lang="fil" className="h-full">
       <head>
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link
@@ -20,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body className="h-full">{children}</body>
     </html>
   );
 }

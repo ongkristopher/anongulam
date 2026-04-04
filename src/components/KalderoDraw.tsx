@@ -61,97 +61,124 @@ function Palayok({
       </div>
 
       {/* SVG palayok */}
-      <svg viewBox="0 0 160 165" width="160" height="165" overflow="visible">
+      <svg viewBox="0 0 160 175" width="160" height="175" overflow="visible">
         <defs>
-          {/* Body gradient: warm terracotta with left highlight */}
-          <radialGradient id={`${gid}-body`} cx="30%" cy="32%" r="72%">
-            <stop offset="0%"   stopColor="#d46840" />
-            <stop offset="40%"  stopColor="#b84428" />
-            <stop offset="100%" stopColor="#782008" />
+          {/* Body gradient: warm earthy brown */}
+          <radialGradient id={`${gid}-body`} cx="26%" cy="24%" r="80%">
+            <stop offset="0%"   stopColor="#e2aa74" />
+            <stop offset="28%"  stopColor="#b86840" />
+            <stop offset="68%"  stopColor="#8a4020" />
+            <stop offset="100%" stopColor="#5a2210" />
           </radialGradient>
-          {/* Lid gradient */}
-          <radialGradient id={`${gid}-lid`} cx="34%" cy="28%" r="68%">
-            <stop offset="0%"   stopColor="#d46840" />
-            <stop offset="50%"  stopColor="#b84428" />
-            <stop offset="100%" stopColor="#782008" />
+          {/* Lid gradient — slightly lighter/warmer */}
+          <radialGradient id={`${gid}-lid`} cx="30%" cy="22%" r="74%">
+            <stop offset="0%"   stopColor="#eab882" />
+            <stop offset="36%"  stopColor="#c07848" />
+            <stop offset="76%"  stopColor="#8e4820" />
+            <stop offset="100%" stopColor="#5c2a10" />
           </radialGradient>
           {/* Deep dark interior */}
-          <radialGradient id={`${gid}-inside`} cx="40%" cy="38%" r="62%">
-            <stop offset="0%"   stopColor="#180804" />
-            <stop offset="65%"  stopColor="#341008" />
-            <stop offset="100%" stopColor="#58200c" />
+          <radialGradient id={`${gid}-inside`} cx="38%" cy="35%" r="64%">
+            <stop offset="0%"   stopColor="#1e0c04" />
+            <stop offset="55%"  stopColor="#3a1408" />
+            <stop offset="100%" stopColor="#5e280e" />
           </radialGradient>
-          {/* Clip path for rattan mat weave lines */}
+          {/* Mat fill */}
+          <radialGradient id={`${gid}-mat`} cx="38%" cy="32%" r="72%">
+            <stop offset="0%"   stopColor="#debb52" />
+            <stop offset="100%" stopColor="#9e7a28" />
+          </radialGradient>
+          {/* Clip for mat weave */}
           <clipPath id={`${gid}-mat-clip`}>
-            <ellipse cx="80" cy="152" rx="66" ry="13" />
+            <ellipse cx="80" cy="151" rx="64" ry="14" />
           </clipPath>
         </defs>
 
         {/* Ground shadow */}
-        <ellipse cx="80" cy="161" rx="64" ry="5.5" fill="#200c02" opacity="0.22" />
+        <ellipse cx="80" cy="166" rx="60" ry="5.5" fill="#1a0a02" opacity="0.28" />
 
-        {/* Rattan mat — prominent woven base */}
-        <ellipse cx="80" cy="152" rx="66" ry="13" fill="#c8a448" />
-        {/* Weave lines going one diagonal */}
-        <g clipPath={`url(#${gid}-mat-clip)`} stroke="#7a5e18" strokeWidth="4" strokeLinecap="round" opacity="0.45">
-          {Array.from({ length: 14 }, (_, i) => (
-            <line key={`wa${i}`} x1={14 + i * 11} y1="139" x2={14 + i * 11 + 14} y2="165" />
+        {/* ── RATTAN MAT — centered at the pot's base level ── */}
+        {/* The mat cradles the pot foot: mat cx matches pot base level so
+            the pot body sits down INTO the mat's inner area */}
+        <ellipse cx="80" cy="151" rx="64" ry="14" fill={`url(#${gid}-mat)`} />
+        {/* Concentric ring weave */}
+        <g clipPath={`url(#${gid}-mat-clip)`}>
+          {[0, 1, 2, 3, 4].map((i) => (
+            <ellipse
+              key={`mr${i}`}
+              cx="80" cy="151"
+              rx={64 - i * 11} ry={14 - i * 2.4}
+              fill="none" stroke="#6a4810" strokeWidth="2.5" opacity="0.55"
+            />
           ))}
         </g>
-        {/* Weave lines going the other diagonal */}
-        <g clipPath={`url(#${gid}-mat-clip)`} stroke="#e0c060" strokeWidth="3" strokeLinecap="round" opacity="0.35">
-          {Array.from({ length: 14 }, (_, i) => (
-            <line key={`wb${i}`} x1={146 - i * 11} y1="139" x2={146 - i * 11 - 14} y2="165" />
+        {/* Diagonal weave A */}
+        <g clipPath={`url(#${gid}-mat-clip)`} stroke="#5a3e0c" strokeWidth="2.5" strokeLinecap="round" opacity="0.42">
+          {Array.from({ length: 19 }, (_, i) => (
+            <line key={`wa${i}`} x1={6 + i * 9} y1="137" x2={6 + i * 9 + 10} y2="165" />
+          ))}
+        </g>
+        {/* Diagonal weave B */}
+        <g clipPath={`url(#${gid}-mat-clip)`} stroke="#dfc060" strokeWidth="1.8" strokeLinecap="round" opacity="0.28">
+          {Array.from({ length: 19 }, (_, i) => (
+            <line key={`wb${i}`} x1={154 - i * 9} y1="137" x2={154 - i * 9 - 10} y2="165" />
           ))}
         </g>
         {/* Mat border rings */}
-        <ellipse cx="80" cy="152" rx="66" ry="13" fill="none" stroke="#7a5e18" strokeWidth="2"   opacity="0.60" />
-        <ellipse cx="80" cy="152" rx="52" ry="10" fill="none" stroke="#7a5e18" strokeWidth="1"   opacity="0.30" />
-        <ellipse cx="80" cy="152" rx="36" ry="6.5" fill="none" stroke="#7a5e18" strokeWidth="0.8" opacity="0.25" />
+        <ellipse cx="80" cy="151" rx="64" ry="14" fill="none" stroke="#5a3c0c" strokeWidth="3"   opacity="0.68" />
+        <ellipse cx="80" cy="151" rx="50" ry="11" fill="none" stroke="#5a3c0c" strokeWidth="1.5" opacity="0.38" />
+        <ellipse cx="80" cy="151" rx="34" ry="7"  fill="none" stroke="#5a3c0c" strokeWidth="1"   opacity="0.25" />
 
-        {/* Pot body — very wide squat belly */}
+        {/* ── POT BODY ──
+            Path anatomy:
+              • Collar join at y=66, x=32–128 (96 px wide)
+              • Belly bulges out to near x=0/160 — very spherical
+              • Lower body narrows into a rounded foot x=52–108 at y=148
+              • Foot bottom curve dips to y=152, matching mat center
+            This gives a distinct rounded foot that nestles into the mat. */}
         <path
-          d="M 28,66 C 4,70 2,143 80,146 C 158,143 156,70 132,66 Z"
+          d="M 32,66 C 0,70 0,138 52,149 C 62,154 98,154 108,149 C 160,138 160,70 128,66 Z"
           fill={`url(#${gid}-body)`}
         />
 
-        {/* Body left highlight sheen */}
-        <ellipse cx="50" cy="102" rx="11" ry="28" fill="white" opacity="0.07" transform="rotate(-10,50,102)" />
+        {/* Body highlight sheen — upper-left bright spot */}
+        <ellipse cx="44" cy="100" rx="14" ry="34" fill="white" opacity="0.10" transform="rotate(-13,44,100)" />
+        <ellipse cx="40" cy="86"  rx="7"  ry="15" fill="white" opacity="0.08" transform="rotate(-13,40,86)" />
 
         {/* Clay texture marks */}
-        <circle cx="34"  cy="108" r="2.2" fill="#5a1c06" opacity="0.30" />
-        <circle cx="50"  cy="132" r="1.6" fill="#5a1c06" opacity="0.24" />
-        <circle cx="118" cy="110" r="2"   fill="#5a1c06" opacity="0.26" />
-        <circle cx="100" cy="98"  r="1.5" fill="#5a1c06" opacity="0.20" />
-        <circle cx="42"  cy="124" r="1.4" fill="#5a1c06" opacity="0.18" />
+        <circle cx="34"  cy="112" r="2"   fill="#3a1408" opacity="0.25" />
+        <circle cx="52"  cy="136" r="1.5" fill="#3a1408" opacity="0.20" />
+        <circle cx="120" cy="114" r="1.8" fill="#3a1408" opacity="0.22" />
+        <circle cx="102" cy="100" r="1.4" fill="#3a1408" opacity="0.17" />
+        <circle cx="44"  cy="128" r="1.3" fill="#3a1408" opacity="0.15" />
 
-        {/* Base foot ring */}
-        <ellipse cx="80" cy="146" rx="44" ry="7" fill="#7a2a08" opacity="0.45" />
+        {/* Shadow where pot foot seats into the mat */}
+        <ellipse cx="80" cy="151" rx="44" ry="6" fill="#2c1004" opacity="0.40" />
 
-        {/* Collar — neck transition from body top to rim underside */}
-        <path d="M 18,50 C 18,58 24,66 28,66 L 132,66 C 136,66 142,58 142,50 Z" fill="#ac3e18" />
+        {/* Collar */}
+        <path d="M 22,52 C 22,59 28,66 32,66 L 128,66 C 132,66 138,59 138,52 Z" fill="#9a5228" />
 
-        {/* Rim top face — wide flat protruding lip */}
-        <ellipse cx="80" cy="50" rx="62" ry="15" fill="#c44e20" />
-        {/* Rim top highlight */}
-        <ellipse cx="62" cy="46" rx="24" ry="7" fill="white" opacity="0.11" />
+        {/* Rim */}
+        <ellipse cx="80" cy="52" rx="58" ry="14" fill="#c06830" />
+        <ellipse cx="62" cy="48" rx="22" ry="6"  fill="white" opacity="0.13" />
+        <ellipse cx="80" cy="59" rx="52" ry="8"  fill="#6a3010" opacity="0.28" />
 
-        {/* Dark interior — deep hollow bowl */}
-        <ellipse cx="80" cy="54" rx="54" ry="13" fill={`url(#${gid}-inside)`} />
+        {/* Interior */}
+        <ellipse cx="80" cy="55" rx="50" ry="12" fill={`url(#${gid}-inside)`} />
+        <ellipse cx="80" cy="55" rx="50" ry="12" fill="none" stroke="#8a4818" strokeWidth="1.5" opacity="0.35" />
 
-        {/* Lid group (animated) */}
+        {/* ── LID ── */}
         <g style={lidAnim}>
-          {/* Lid flange — base aligned to rim (cy=50, rx matches rim rx=62) */}
-          <ellipse cx="80" cy="50" rx="65" ry="14" fill="#9c3810" />
-          {/* Lid dome — base closes along the top ellipse arc to match perspective */}
-          <path d="M 15,50 C 15,4 145,4 145,50 A 65,14 0 0 0 15,50 Z" fill={`url(#${gid}-lid)`} />
-          {/* Lid dome highlight */}
-          <ellipse cx="54" cy="28" rx="22" ry="14" fill="white" opacity="0.09" transform="rotate(-16,54,28)" />
-          {/* Cylindrical knob */}
-          <ellipse cx="80" cy="8"  rx="12" ry="5.5" fill="#c04820" />
-          <path   d="M 68,8 L 68,18 Q 80,22 92,18 L 92,8 Z" fill="#b03e18" />
-          <ellipse cx="80" cy="18" rx="12" ry="5"   fill="#8e3012" />
-          <ellipse cx="76" cy="6"  rx="6"  ry="3"   fill="white" opacity="0.18" />
+          <ellipse cx="80" cy="52" rx="61" ry="13" fill="#7a3818" />
+          <path d="M 19,52 C 19,10 141,10 141,52 A 61,13 0 0 0 19,52 Z" fill={`url(#${gid}-lid)`} />
+          <ellipse cx="52" cy="29" rx="20" ry="13" fill="white" opacity="0.11" transform="rotate(-18,52,29)" />
+          <ellipse cx="46" cy="22" rx="9"  ry="7"  fill="white" opacity="0.07" transform="rotate(-18,46,22)" />
+          {/* Knob stem */}
+          <path d="M 70,12 Q 70,8 80,7 Q 90,8 90,12 L 90,22 Q 80,25 70,22 Z" fill="#a85a28" />
+          {/* Knob cap */}
+          <ellipse cx="80" cy="10" rx="13" ry="6"  fill="#c87840" />
+          <ellipse cx="80" cy="20" rx="11" ry="5"  fill="#8a4018" />
+          <ellipse cx="75" cy="7"  rx="6"  ry="3.5" fill="white" opacity="0.20" />
         </g>
       </svg>
     </div>
