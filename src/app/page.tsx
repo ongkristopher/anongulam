@@ -94,7 +94,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col min-h-screen">
       {/* ── Sticky Nav ── */}
       <header
         className="shrink-0 z-50 flex items-center px-6 py-4"
@@ -114,7 +114,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-1 overflow-y-auto flex flex-col">
+      <main className="flex-1 flex flex-col">
         {/* ── Hero ── */}
         <section className="relative px-6 pt-8 pb-6 overflow-hidden text-center shrink-0">
           {/* Banderitas — wavy hanging string + triangle pennants */}

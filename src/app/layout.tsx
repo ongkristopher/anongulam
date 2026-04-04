@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fil" className="h-full">
+    <html lang="fil">
       <head>
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link
@@ -24,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body className="h-full">{children}</body>
+      <body>{children}</body>
     </html>
   );
 }

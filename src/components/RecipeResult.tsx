@@ -163,7 +163,7 @@ export default function RecipeResult({ viand, onPickNew }: RecipeResultProps) {
             <div className="mb-6">
               <button
                 onClick={onPickNew}
-                className="inline-flex items-center gap-3 px-10 py-4 rounded-full font-headline font-bold text-xl transition-all hover:scale-105 active:scale-95 text-white shadow-[0px_12px_32px_rgba(187,49,0,0.3)]"
+                className="inline-flex font-bbt items-center gap-3 px-10 py-4 rounded-full font-headline font-bold text-xl transition-all hover:scale-105 active:scale-95 text-white shadow-[0px_12px_32px_rgba(187,49,0,0.3)]"
                 style={{ background: "linear-gradient(135deg, #bb3100, #ff7851)" }}
               >
                 <span className="material-symbols-filled">celebration</span>
